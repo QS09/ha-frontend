@@ -1,4 +1,4 @@
-import { GuestLayout } from '@/layout/GuestLayout';
+import { GuestLayout } from '@/layouts/GuestLayout';
 
 const LoginPage = () => {
   return <>Login page</>;
