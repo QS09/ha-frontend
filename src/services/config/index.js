@@ -9,7 +9,7 @@ import * as interceptors from './interceptors';
  */
 export const webApi = ({ auth, req, res, asset } = {}) => {
   const baseApi = axios.create({
-    baseURL: asset ? '' : process.env.REACT_APP_API_BASE_URL,
+    baseURL: asset ? '' : process.env.apiBaseUrl,
     responseType: asset ? 'blob' : false,
     useAuth: auth,
     headers: {

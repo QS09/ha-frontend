@@ -4,6 +4,7 @@ import nProgress from 'nprogress';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { SnackbarProvider } from 'notistack';
 
 import { CacheProvider } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
@@ -31,8 +32,12 @@ const App = (props) => {
       <AuthProvider>
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <ThemeProvider theme={createTheme()}>
-            <CssBaseline />
-            {getLayout(<Component {...pageProps} />)}
+            <SnackbarProvider
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+              <CssBaseline />
+              {getLayout(<Component {...pageProps} />)}
+            </SnackbarProvider>
           </ThemeProvider>
         </LocalizationProvider>
       </AuthProvider>

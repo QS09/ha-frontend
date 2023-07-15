@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
+import { useSnackbar } from 'notistack';
 
 import {
   Button,
@@ -12,12 +14,18 @@ import {
   Stack,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
+import useAuthContext from '@/hooks/useAuthContext';
+
 export const RegisterForm = () => {
+  const router = useRouter();
+  const { register } = useAuthContext();
+  const { enqueueSnackbar } = useSnackbar();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -47,14 +55,36 @@ export const RegisterForm = () => {
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      password: Yup.string().max(255).required('Password is required'),
+      password: Yup.string().min(8).max(255).required('Password is required'),
     }),
 
-    onSubmit: (values) => {
-      onSubmit({
-        ...values,
-      });
-      formik.resetForm();
+    onSubmit: async ({
+      firstName,
+      lastName,
+      dateOfBirth,
+      age,
+      email,
+      password,
+    }) => {
+      try {
+        await register({
+          firstName,
+          lastName,
+          dateOfBirth,
+          age,
+          email,
+          password,
+        });
+        enqueueSnackbar('User registered successfully!', {
+          variant: 'success',
+        });
+        formik.resetForm();
+        router.push('/login');
+      } catch (err) {
+        enqueueSnackbar('User registered failed!', {
+          variant: 'error',
+        });
+      }
     },
   });
 
@@ -203,8 +233,16 @@ export const RegisterForm = () => {
 
         <Grid item xs={12}>
           <Stack spacing={1}>
-            <Button type="submit" variant="contained">
-              Register
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={formik.isSubmitting}
+            >
+              {formik.isSubmitting ? (
+                <CircularProgress size={25} color="info" />
+              ) : (
+                <span>Register</span>
+              )}
             </Button>
           </Stack>
         </Grid>

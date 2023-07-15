@@ -6,4 +6,4 @@ export const useAuthContext = () => {
   return context;
 };
 
-export default useAuth;
+export default useAuthContext;
