@@ -3,6 +3,7 @@ import Router from 'next/router';
 import nProgress from 'nprogress';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 import { CacheProvider } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
@@ -27,12 +28,14 @@ const App = (props) => {
         <title>Next + MUI</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <ThemeProvider theme={createTheme()}>
-          <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
-        </ThemeProvider>
-      </LocalizationProvider>
+      <AuthProvider>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <ThemeProvider theme={createTheme()}>
+            <CssBaseline />
+            {getLayout(<Component {...pageProps} />)}
+          </ThemeProvider>
+        </LocalizationProvider>
+      </AuthProvider>
     </CacheProvider>
   );
 };
