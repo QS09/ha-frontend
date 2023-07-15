@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
@@ -15,6 +16,7 @@ import {
   InputAdornment,
   IconButton,
   CircularProgress,
+  Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -244,6 +246,13 @@ export const RegisterForm = () => {
                 <span>Register</span>
               )}
             </Button>
+          </Stack>
+        </Grid>
+        <Grid item xs={12}>
+          <Stack spacing={1} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography variant="title" textAlign="center">
+              Has account already? <Link href="/login">Login</Link>
+            </Typography>
           </Stack>
         </Grid>
       </Grid>

@@ -1,6 +1,7 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { authApi } from '@/services/auth';
+import { userApi } from '@/services/users';
 
 const initialValues = {
   isLoggedIn: false,
@@ -15,11 +16,30 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const accessToken = globalThis.localStorage.getItem('accessToken');
+    if (accessToken) {
+      loadProfile();
+    }
+  }, []);
+
+  const loadProfile = async () => {
+    const { ok, data } = await userApi.profile();
+    setUser(data);
+    if (!ok) throw new Error('Profile loading failed!');
+  };
+
   const login = async (payload) => {
-    const token = await authApi.login(payload);
-    globalThis.localStorage.setItem('accessToken', token.access);
-    globalThis.localStorage.setItem('refreshToken', token.refresh);
+    const body = {
+      username: payload.email,
+      password: payload.password,
+    };
+    const { ok, data } = await authApi.login(body);
+    if (!ok) throw new Error('User login failed!');
+    globalThis.localStorage.setItem('accessToken', data.access);
+    globalThis.localStorage.setItem('refreshToken', data.refresh);
     setIsLoggedIn(true);
+    await loadProfile();
   };
 
   const register = async (payload) => {
